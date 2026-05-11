@@ -16,6 +16,10 @@ echo "🚀 Iniciando instalação do Kit de Agentes no projeto: $(basename "${TA
 # Verifica se a pasta .agent já existe
 if [ -d "$AGENT_DIR" ]; then
     echo "⚠️ Diretório .agent já existe."
+    echo "🆔 Garantindo identidade desta máquina..."
+    MACHINE_ID=$(python3 "$KIT_DIR/scripts/lib_machine.py" --get-id)
+    python3 "$KIT_DIR/scripts/lib_machine.py" --register "$SESSION_DIR" "$MACHINE_ID" "$(hostname)"
+    
     echo "🔄 Invocando validate-kit.py como fallback..."
     python3 "$KIT_DIR/scripts/validate-kit.py" --target "$TARGET_DIR"
     exit 0
@@ -37,15 +41,30 @@ echo "📂 Configurando repositório de sessão isolado..."
 mkdir -p "$SESSION_DIR"
 
 if [ ! -d "$SESSION_DIR/.git" ]; then
-    cd "$SESSION_DIR"
-    git init > /dev/null
-    git branch -M main 2>/dev/null || true
-    echo "# Contexto de Sessão" > CONTEXT.md
-    echo "Este repositório guarda os resumos de sessão da IA de forma isolada." > README.md
-    git add . > /dev/null
-    git commit -m "chore: initial session context repository" > /dev/null
-    cd "$TARGET_DIR"
-    echo "   ✅ Repositório local de sessão inicializado."
+    echo "❓ Deseja conectar a um repositório de contexto existente no GitHub? (s/N)"
+    read -p "> " choice
+    if [ "$choice" == "s" ] || [ "$choice" == "S" ]; then
+        read -p "URL do repositório (git@github.com:...): " repo_url
+        if [ -n "$repo_url" ]; then
+            git clone "$repo_url" "$SESSION_DIR"
+            echo "   ✅ Repositório de sessão clonado."
+        else
+            echo "   ⚠️ URL vazia. Inicializando localmente..."
+            cd "$SESSION_DIR"
+            git init > /dev/null
+            cd "$TARGET_DIR"
+        fi
+    else
+        cd "$SESSION_DIR"
+        git init > /dev/null
+        git branch -M main 2>/dev/null || true
+        echo "# Contexto de Sessão" > CONTEXT.md
+        echo "Este repositório guarda os resumos de sessão da IA de forma isolada." > README.md
+        git add . > /dev/null
+        git commit -m "chore: initial session context repository" > /dev/null
+        cd "$TARGET_DIR"
+        echo "   ✅ Repositório local de sessão inicializado."
+    fi
 else
     echo "   ✅ Repositório de sessão já existia."
 fi
@@ -63,6 +82,12 @@ if ! grep -q "\.agent/session" "$GITIGNORE_FILE"; then
     echo ".agent/session/*" >> "$GITIGNORE_FILE"
     echo "   🔒 .agent/session protegido e adicionado ao .gitignore do projeto."
 fi
+
+# Registro de Identidade da Máquina
+echo "🆔 Registrando identidade desta máquina..."
+MACHINE_ID=$(python3 "$KIT_DIR/scripts/lib_machine.py" --get-id)
+python3 "$KIT_DIR/scripts/lib_machine.py" --register "$SESSION_DIR" "$MACHINE_ID" "$(hostname)"
+echo "   ✅ Máquina registrada como: $(hostname) ($MACHINE_ID)"
 
 # Invocando validação final
 echo "🔍 Rodando validação final..."

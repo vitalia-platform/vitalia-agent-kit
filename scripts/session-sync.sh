@@ -1,54 +1,43 @@
 #!/usr/bin/env bash
-# Sincronização Segura de Contexto (/session-sync)
-# Usado automaticamente pelo /session-end ou manualmente.
+# Sincronizador de Sessão Interativo (/session-sync)
+# Lida com Git Pull/Push (incluindo SSH) e Consolidação de Contexto.
 
 set -e
 
 KIT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." >/dev/null 2>&1 && pwd)"
 TARGET_DIR="${PWD}"
 SESSION_DIR="${TARGET_DIR}/.agent/session"
-GUARD_SCRIPT="${KIT_DIR}/scripts/lib_sync_guard.py"
-
-SUMMARY="${1:-Atualização de contexto via session-sync}"
-DATE_STR=$(date "+%Y-%m-%d %H:%M:%S")
-
-echo "🔄 Iniciando sincronização segura de contexto..."
+CONSOLIDATE_SCRIPT="${KIT_DIR}/scripts/session-consolidate.py"
 
 if [ ! -d "$SESSION_DIR/.git" ]; then
-    echo "❌ Erro: .agent/session não é um repositório git."
+    echo "❌ Erro: Diretório de sessão não é um repositório Git."
     exit 1
 fi
-
-echo "🛡️ Acionando Porteiro de Concorrência..."
-if ! python3 "$GUARD_SCRIPT" --action check --session-dir "$SESSION_DIR"; then
-    echo "🚨 SINCRONIZAÇÃO ABORTADA 🚨"
-    echo "Motivo: Divergência de ETag detectada. O remoto foi alterado desde o início da sua sessão."
-    echo "👉 Execute: bash kit/scripts/session-resolve.sh"
-    exit 1
-fi
-
-echo "✅ ETag Validado. Preparando commit..."
 
 cd "$SESSION_DIR"
 
-# Adicionar todas as mudanças (incluindo SESSION_HISTORY.md)
-git add .
+echo "🔄 [1/4] Puxando atualizações da Nuvem..."
+# O git pull pode pedir senha aqui (SSH/HTTPS)
+git pull origin main --rebase || { echo "❌ Falha no Pull. Verifique sua conexão e chaves SSH."; exit 1; }
 
-# Se não houver mudanças
-if git diff --staged --quiet; then
-    echo "⚠️ Nenhuma mudança detectada no contexto para sincronizar."
-    exit 0
+echo "🧩 [2/4] Consolidando contextos de todas as máquinas..."
+python3 "$CONSOLIDATE_SCRIPT" "$SESSION_DIR"
+
+echo "💾 [3/4] Salvando estado consolidado localmente..."
+git add .
+if ! git diff --staged --quiet; then
+    git commit -m "chore: consolidated context shards [$(date +'%Y-%m-%d %H:%M')]"
+else
+    echo "   (Nenhuma mudança nova para commitar)"
 fi
 
-COMMIT_MSG="[${DATE_STR}] ${SUMMARY}"
-git commit -m "$COMMIT_MSG"
-
-echo "☁️ Fazendo push para origin/main..."
+echo "⬆️  [4/4] Enviando para a Nuvem..."
+# O git push pode pedir senha aqui
 if git push origin main; then
-    echo "✅ Contexto atualizado na nuvem com sucesso!"
-    # Atualiza o lock para a nova data
-    python3 "$GUARD_SCRIPT" --action update --session-dir "$SESSION_DIR"
+    echo "✅ Sincronia Global Concluída!"
+    # Atualiza o lock local
+    python3 "${KIT_DIR}/scripts/lib_sync_guard.py" --action update --session-dir "$SESSION_DIR"
 else
-    echo "❌ Falha no push (possível problema de rede ou permissão)."
+    echo "❌ Falha no Push. Verifique suas permissões."
     exit 1
 fi

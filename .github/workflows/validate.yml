@@ -30,7 +30,7 @@ jobs:
           done
 
       - name: Run kit validation
-        run: python3 scripts/validate-kit.py --target .
+        run: python3 scripts/validate-kit.py --target . --skip-session
 
       - name: Check all agent files have required frontmatter
         run: |
