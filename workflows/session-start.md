@@ -41,22 +41,79 @@ Aguarde a resolução antes de prosseguir.
 Buscar: <workspace-root>/.agent/session/CONTEXT.md
 ```
 
-**Se não existe:**
+---
+
+#### 🆕 MODO TEMPLATE — Se `.agent/session/CONTEXT.md` NÃO existe
+
+Isso indica um clone fresco do repositório template. Nenhuma revisão foi configurada ainda.
+Apresente o seguinte guia de inicialização:
+
 ```
-"📋 Projeto sem contexto registrado.
-Vou criar o arquivo inicial. Me diga:
-1. Nome do projeto:
-2. Objetivo em uma frase:
-3. O que está sendo desenvolvido agora:
-4. Próximo item prioritário:"
+════════════════════════════════════════════════
+🆕 MODO TEMPLATE — Repositório base detectado
+Nenhuma revisão integrativa foi iniciada neste ambiente.
+════════════════════════════════════════════════
 
-→ Detectar automaticamente: stack, tipo, branch (via git)
-→ Criar .agent/session/CONTEXT.md
+Siga os 5 passos abaixo para configurar seu ambiente de trabalho:
+
+─────────────────────────────────────────
+PASSO 1 — Crie seu repositório de trabalho no GitHub
+─────────────────────────────────────────
+Crie um novo repositório VAZIO no GitHub (não inicialize com README).
+Nome sugerido: revisao-[tema]-[ano]
+Exemplo:      revisao-exercicio-digital-2026
+
+─────────────────────────────────────────
+PASSO 2 — Aponte este clone para o seu repositório
+─────────────────────────────────────────
+$ git remote set-url origin git@github.com:SEU_USUARIO/revisao-[tema]-[ano].git
+$ git push -u origin main
+
+─────────────────────────────────────────
+PASSO 3 — Crie seu repositório de contexto de sessão
+─────────────────────────────────────────
+O contexto de sessão permite à IA retomar o trabalho entre máquinas e sessões.
+É um repositório Git separado que armazena o estado da revisão.
+
+  3a. Crie outro repositório VAZIO no GitHub:
+      Nome sugerido: revisao-[tema]-contexto
+      Exemplo:       revisao-exercicio-digital-contexto
+
+  3b. Configure o contexto no projeto:
+      $ bash kit/scripts/install.sh
+      → Quando solicitado, informe a URL SSH do repositório de contexto:
+        git@github.com:SEU_USUARIO/revisao-[tema]-contexto.git
+
+  3c. Verifique a instalação:
+      $ python3 .agent/scripts/validate-kit.py --target .
+
+─────────────────────────────────────────
+PASSO 4 — Prepare os dados de calibração
+─────────────────────────────────────────
+As pastas de trabalho serão criadas pelo /integrative-review com os nomes
+que você definir no painel. Antes de invocá-lo, tenha em mãos:
+
+  • PDFs dos artigos mais relevantes (baixados do portal Scopus)
+  • CSV de metadados exportado da Web of Science
+  • CSV bruto completo da busca nas bases de dados
+
+─────────────────────────────────────────
+PASSO 5 — Inicie a revisão
+─────────────────────────────────────────
+Com o ambiente configurado, invoque:
+
+  /integrative-review
+
+O workflow abrirá o painel interativo de setup, onde você definirá
+o escopo, as pastas de trabalho e a infraestrutura de processamento.
+════════════════════════════════════════════════
 ```
 
-**Se existe:** seguir Passo 2.
+---
 
-### Passo 2: Processar e apresentar resumo
+#### 📋 MODO TRABALHO — Se `CONTEXT.md` existe
+
+Processar e apresentar resumo:
 
 ```markdown
 ---
@@ -97,14 +154,12 @@ Após o usuário confirmar o foco:
 
 ```
 /session-start
-/session-start vitalia-01
-/session-start --foco="endpoint de biometria"
+/session-start --foco="calibração de critérios PRISMA"
 ```
 
 ---
 
 ## Saída Esperada
 
-- Resumo claro do estado do projeto
-- Próximo passo definido
-- Ambiente preparado para trabalhar imediatamente
+- **Modo Template**: Guia de 5 passos até `/integrative-review`
+- **Modo Trabalho**: Resumo do estado atual + próximo passo prioritário
