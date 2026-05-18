@@ -1,3 +1,8 @@
+---
+description: >
+  Ponto de entrada principal para iniciar, estruturar e orquestrar uma Revisão Sistemática ou Integrativa da Literatura.
+---
+
 # Workflow: Integrative Review (`/integrative-review`)
 
 **Description**: Ponto de entrada principal para iniciar, estruturar e orquestrar uma Revisão Sistemática ou Integrativa da Literatura. Conduz o pesquisador pelo Painel Interativo de Setup, calibra os critérios com base na amostra, e aciona o Esquadrão Science (`chief-reviewer`, `data-librarian`, `methodology-auditor`).
@@ -6,7 +11,7 @@
 
 ## 1. Fase Exploratória — Painel Interativo de Setup
 
-Quando o usuário acionar `/integrative-review`, **PARE E COLETE** as informações abaixo antes de gerar qualquer artefato. Apresente como um formulário interativo:
+Quando o usuário acionar `/integrative-review`, **PARE E COLETE** as informações abaixo. Apresente este formulário criando um **Artifact** em formato Markdown ou HTML (ex: `setup_revisao.md` ou `setup_revisao.html`), que abrirá em um painel, permitindo ao usuário visualizar e aprovar os dados de entrada de forma estruturada:
 
 ### 1.1 Identidade do Estudo
 1. **Título provisório** do estudo
@@ -15,7 +20,7 @@ Quando o usuário acionar `/integrative-review`, **PARE E COLETE** as informaç�
 4. **Pergunta Norteadora (PICO/PCC)**: qual é a exata pergunta científica que a revisão pretende responder?
 5. **Recorte temporal** (ex: 2020–2026)
 6. **Tipos de estudo aceitos** (ex: RCTs, Meta-análises, estudos observacionais)
-7. **Bases de dados alvo** — aconselhe Scopus + Web of Science via RNP/Institucional; desencoraje PubMed direto para volumes acima de 10.000 registros
+7. **Bases de dados alvo** — aconselhe Scopus + Web of Science via RNP/Institucional. O workflow deve adaptar suas configurações de busca com base nas escolhas do usuário. Nota: Como arquivos `.csv` brutos que vêm da nuvem frequentemente têm limites estipulados pelas plataformas de busca, a configuração deve prever múltiplos arquivos para processar.
 
 ### 1.2 Configuração das Pastas de Trabalho
 
@@ -92,8 +97,17 @@ Após confirmação do depósito:
 
 Assim que `criteria_config.yaml` estiver aprovado e os lotes depositados:
 
-1. **Acione o `@data-librarian`**: processar o CSV bruto usando a skill `academic-id-resolver` para limpar DOIs e preparar o `PRISMA_LOG.csv`
+1. **Acione o `@data-librarian`**: processar **todos os arquivos CSV** brutos na pasta de exportação (atendendo ao requisito de múltiplos arquivos gerados por limites das plataformas), usando a skill `academic-id-resolver` para limpar DOIs, unificar os registros e preparar o `PRISMA_LOG.csv`
 2. **Acione o `@chief-reviewer`**: rodar o screening da Fase 1 (título + resumo via Ollama local), delegando leitura massiva ao `research-analyst` e enviando resultados para o `methodology-auditor`
+
+---
+
+## 6. Verificação de Arquivos Ignorados (.gitignore)
+
+No final do processo de inicialização, verifique com o usuário a necessidade de editar o arquivo `.gitignore`.
+1. Apresente as pastas criadas (ex: as que contêm arquivos CSV brutos, milhares de PDFs na amostra, etc).
+2. Peça que o usuário confirme quais caminhos não devem ir para o repositório.
+3. Edite o `.gitignore` para corrigir/adicionar os caminhos das pastas de dados conforme a escolha do usuário.
 
 ---
 

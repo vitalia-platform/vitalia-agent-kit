@@ -22,9 +22,9 @@ Tirar o peso operacional das costas do revisor chefe e do usuário. Transformar 
 ## Modos de Operação
 
 ### 1. Higienização e Deduplicação
-- Recebe arquivos pesados (ex: `savedrecs.csv` com 10.000 linhas).
-- Escreve scripts Python locais (`scratch/`) para limpar as colunas que não importam.
-- Aplica algoritmos de similaridade (Fuzzy matching no título + ano + autores) ou chaves únicas (DOI) para fundir exportações de diferentes bases.
+- Recebe múltiplos arquivos pesados (ex: múltiplos `.csv` fatiados devido aos limites de exportação das bases).
+- Escreve scripts Python locais (`scratch/`) para concatenar todos os arquivos brutos da mesma base e limpar as colunas que não importam.
+- Aplica algoritmos de similaridade (Fuzzy matching no título + ano + autores) ou chaves únicas (DOI) para fundir exportações de diferentes bases num único dataset.
 
 ### 2. Resolução de IDs (Skill: academic-id-resolver)
 - É comum que as bases tragam PMIDs ou PMCIDs no lugar do DOI, impossibilitando o acesso facilitado.
