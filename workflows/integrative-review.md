@@ -51,7 +51,9 @@ Após aprovação do painel pelo pesquisador:
    ```bash
    mkdir -p [pasta-exportacao] [pasta-amostra]/scopus [pasta-amostra]/webofscience [pasta-lotes] [pasta-saida] [pasta-fichamentos]
    ```
-3. Gere o `criteria_config.yaml` na raiz do projeto com **todos** os parâmetros definidos — este arquivo é o cérebro de todo processamento posterior
+3. Gere o `criteria_config.yaml` na raiz do projeto com **todos** os parâmetros definidos — este arquivo é o cérebro de todo processamento posterior.
+4. **Substituição de Variáveis:** O Agente de IA deve editar (via `replace_file_content` ou similar) os arquivos dentro da pasta `inicio/` (como `ROTEIRO_BUSCA_CAPES.md` e `00_SUMARIO_EXECUTIVO.md`), substituindo as tags (ex: `{{SEARCH_STRING}}`, `{{START_YEAR}}`, `{{LANGUAGES}}`) pelos dados reais coletados no painel.
+   - *Verificação de Segurança:* O Agente deve validar se a string booleana fornecida tem parênteses balanceados antes de substituir. Após a substituição, deve reler os arquivos para atestar que nenhuma tag vazia (`{{`) sobrou e que não há erro de markdown ou links quebrados.
 
 ---
 

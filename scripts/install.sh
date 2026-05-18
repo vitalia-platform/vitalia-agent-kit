@@ -15,14 +15,7 @@ echo "🚀 Iniciando instalação do Kit de Agentes no projeto: $(basename "${TA
 
 # Verifica se a pasta .agent já existe
 if [ -d "$AGENT_DIR" ]; then
-    echo "⚠️ Diretório .agent já existe."
-    echo "🆔 Garantindo identidade desta máquina..."
-    MACHINE_ID=$(python3 "$KIT_DIR/scripts/lib_machine.py" --get-id)
-    python3 "$KIT_DIR/scripts/lib_machine.py" --register "$SESSION_DIR" "$MACHINE_ID" "$(hostname)"
-    
-    echo "🔄 Invocando validate-kit.py como fallback..."
-    python3 "$KIT_DIR/scripts/validate-kit.py" --target "$TARGET_DIR"
-    exit 0
+    echo "⚠️ Diretório .agent já existe. Atualizando symlinks e configurações..."
 fi
 
 # Criação da estrutura e symlinks
@@ -31,8 +24,10 @@ mkdir -p "$AGENT_DIR"
 
 for item in agents rules skills workflows templates scripts; do
     if [ -d "$KIT_DIR/$item" ]; then
+        # Remove symlink/pasta antiga se existir para forçar recriação
+        rm -rf "$AGENT_DIR/$item"
         ln -s "$KIT_DIR/$item" "$AGENT_DIR/$item"
-        echo "   🔗 Symlink criado: $item -> $KIT_DIR/$item"
+        echo "   🔗 Symlink atualizado: $item -> $KIT_DIR/$item"
     fi
 done
 
