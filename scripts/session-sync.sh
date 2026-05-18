@@ -17,8 +17,13 @@ fi
 cd "$SESSION_DIR"
 
 echo "🔄 [1/4] Puxando atualizações da Nuvem..."
-# O git pull pode pedir senha aqui (SSH/HTTPS)
-git pull origin main --rebase || { echo "❌ Falha no Pull. Verifique sua conexão e chaves SSH."; exit 1; }
+# Verifica se o remoto tem histórico antes de tentar pull
+HAS_REMOTE=$(git ls-remote --heads origin main 2>/dev/null | wc -l | tr -d ' ')
+if [ "$HAS_REMOTE" -gt "0" ]; then
+    git pull origin main --rebase || { echo "❌ Falha no Pull. Verifique sua conexão e chaves SSH."; exit 1; }
+else
+    echo "   ℹ️  Remoto sem histórico (repositório vazio). Pulando pull."
+fi
 
 echo "🧩 [2/4] Consolidando contextos de todas as máquinas..."
 python3 "$CONSOLIDATE_SCRIPT" "$SESSION_DIR"

@@ -11,25 +11,27 @@ import argparse
 from pathlib import Path
 
 def get_git_remote_timestamp(session_dir):
-    """Executa git fetch e retorna o timestamp do origin/main."""
+    """Executa git fetch e retorna o timestamp do origin/main. Retorna 0 se repo vazio ou sem remote."""
     try:
         # Puxa atualizações do remoto silenciosamente
         subprocess.run(["git", "fetch", "origin", "main"], cwd=session_dir, check=False, capture_output=True)
         # Extrai o timestamp (unix epoch) do último commit do origin/main
         result = subprocess.run(["git", "log", "-1", "--format=%ct", "origin/main"], 
                                 cwd=session_dir, check=True, capture_output=True, text=True)
-        return int(result.stdout.strip())
-    except (subprocess.CalledProcessError, ValueError):
-        # Pode ocorrer se origin/main não existir ainda (repositório recém criado)
+        ts = result.stdout.strip()
+        return int(ts) if ts else 0
+    except Exception:
+        # Pode ocorrer se origin/main não existir ainda (repositório recém criado ou sem remote)
         return 0
 
 def get_local_timestamp(session_dir):
-    """Retorna o timestamp do HEAD local."""
+    """Retorna o timestamp do HEAD local. Retorna 0 se repo sem commits."""
     try:
         result = subprocess.run(["git", "log", "-1", "--format=%ct", "HEAD"], 
                                 cwd=session_dir, check=True, capture_output=True, text=True)
-        return int(result.stdout.strip())
-    except (subprocess.CalledProcessError, ValueError):
+        ts = result.stdout.strip()
+        return int(ts) if ts else 0
+    except Exception:
         return 0
 
 def read_sync_lock(lock_file):
