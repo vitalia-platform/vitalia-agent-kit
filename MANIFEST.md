@@ -2,8 +2,8 @@
 
 > Coleção portátil de agentes, skills e workflows para projetos de saúde & wellness e além.
 
-**Versão**: 0.2.0  
-**Última atualização**: 2026-05-11  
+**Versão**: 0.3.0  
+**Última atualização**: 2026-05-19  
 **Compatível com**: Gemini CLI (Antigravity) — e qualquer ferramenta que suporte `.agent/` ou `.gemini/`
 
 ---
@@ -32,7 +32,7 @@
 | 16 | **Meta** | Knowledge Curator | `agents/meta/knowledge-curator.md` | aprendi, extraia padrão, crie agente |
 | 17 | **Meta** | Bootstrapper | `agents/meta/bootstrapper.md` | novo projeto, bootstrap, do zero |
 
-### Skills (11)
+### Skills (13)
 
 | # | Categoria | Skill | Diretório | Trigger |
 |---|-----------|-------|-----------|---------|
@@ -47,8 +47,10 @@
 | 9 | **Science** | Evidence Grading | `skills/science/evidence-grading/` | nível de evidência, RCT, meta-análise |
 | 10 | **Science** | Clinical Safety | `skills/science/clinical-safety/` | segurança clínica, limite da IA |
 | 11 | **Science** | RAG Protocol | `skills/science/rag-protocol/` | PubMed, base externa, retrieval |
+| 12 | **Science** | Data Ingestion | `skills/science/data-ingestion/` | ingestion, run_ingestion, mapear CSV |
+| 13 | **Science** | LLM Screener | `skills/science/llm-screener/` | screening, run_fase1, triagem |
 
-### Workflows (8)
+### Workflows (9)
 
 | Comando | Arquivo | Função |
 |---------|---------|--------|
@@ -60,6 +62,7 @@
 | `/adr` | `workflows/adr.md` | Cria Architecture Decision Record |
 | `/bootstrap` | `workflows/bootstrap.md` | Inicializa novo projeto completo |
 | `/release` | `workflows/release.md` | Prepara e executa release |
+| `/integrative-review` | `workflows/integrative-review.md` | Orquestra pipeline de revisão de literatura |
 
 ### Rules (6)
 
@@ -86,11 +89,11 @@
 | Componente | Quantidade |
 |-----------|-----------|
 | Agentes | 17 (5 dev + 9 science + 3 meta) |
-| Skills | 11 |
-| Workflows | 8 |
+| Skills | 13 |
+| Workflows | 9 |
 | Rules | 6 |
 | Scripts | 2 |
-| **Total** | **44 componentes** |
+| **Total** | **47 componentes** |
 
 ---
 
@@ -124,6 +127,12 @@ Solicitação do usuário
 ---
 
 ## 🔄 Changelog
+
+### v0.3.0 — 2026-05-19
+- ✨ Adicionado suporte ao Pipeline de Revisão Integrativa modular e agnóstico de domínio.
+- 📦 Novas Skills científicas registradas: `data-ingestion` e `llm-screener`.
+- ⚙️ Novo Workflow registrado: `/integrative-review` orquestrando setups, few-shots e ingestion.
+- 🔧 Scripts Python de automação adicionados a `kit/scripts/review_pipeline/` com resolução de conflitos e retry.
 
 ### v0.2.0 — 2026-05-11
 - ✨ 5 novos agentes science: `exercise-physiologist`, `longevity-specialist`, `research-analyst`, `sleep-specialist`, `supplement-pharmacologist`

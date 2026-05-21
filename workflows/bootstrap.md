@@ -1,3 +1,4 @@
+<!-- .agent/workflows/bootstrap.md | Atualizado em: 21-05-2026 11:31:00(GMT-04:00) -->
 ---
 description: >
   Inicializa um novo projeto do zero com estrutura padronizada, convenções
@@ -55,6 +56,12 @@ git init && git add . && git commit -m "chore: bootstrap [nome]"
 ### Fase 5: CONTEXT.md
 
 Criar com dados do briefing. Usuário valida antes de salvar.
+
+### Fase 5.5: Validação de Segurança e .env
+
+Instruir o usuário a:
+1. Copiar o `.env.example` para `.env`
+2. Executar o script de sanitização: `bash scripts/sanitize_for_cloud.sh`
 
 ### Fase 6: Entrega
 

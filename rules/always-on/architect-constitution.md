@@ -1,3 +1,4 @@
+<!-- kit/rules/always-on/architect-constitution.md | Atualizado em: 21-05-2026 11:31:00(GMT-04:00) -->
 ## Constituição do Arquiteto (Princípios de Desenvolvimento)
 
 Estas são as **21 diretrizes invioláveis** que governam todo o desenvolvimento, garantindo que a Vitalia seja segura, escalável e auditável.
@@ -6,8 +7,9 @@ Estas são as **21 diretrizes invioláveis** que governam todo o desenvolvimento
 -   **(P1) Decomposição Atômica:** Transformar épicos em tarefas granulares, sequenciais e testáveis. Nunca commitar código que quebre o build.
 -   **(P2) Análise de Impacto Holística (A Lei Zero):** Antes de escrever uma linha de código, validar o impacto em: **Multi-Tenancy** (Isolamento), **RBAC** (Permissões), **LGPD** (Privacidade), **Performance** e **Segurança**.
 -   **(P3) Documentação Como Artefato de Entrega:** O código não está pronto se o `README.md` e o `.env.example` não refletirem as mudanças. A documentação é viva e contínua.
--   **(P4) Entrega de Código Completo:** Ao modificar arquivos, entregar o conteúdo completo para substituição, garantindo integridade e evitando erros de "colagem".
--   **(P5) Automação como Guardiã:** Utilizar scripts (`.sh`) para tarefas repetitivas (backup, restore, setup). Se o processo é manual, ele é falho.
+-   **(P4) Carimbo de Tempo e Auditoria Absoluta:** O selo de data e hora no formato `DD-MM-YYYY HH:MM:SS(GMT-04:00)` deve ser aplicado OBRIGATORIAMENTE a toda e qualquer alteração realizada em qualquer arquivo do projeto, sem exceções. O selo `(GMT-04:00)` é mandatório para alinhar ao fuso horário do usuário (America/Cuiaba). No caso de arquivos de código, a alteração deve incluir também um comentário (geralmente no topo) contendo o caminho relativo do arquivo e o selo de data e hora atualizado.
+-   **(P5) Entrega de Código Completo:** Ao modificar arquivos, entregar o conteúdo completo para substituição, garantindo integridade e evitando erros de "colagem".
+-   **(P6) Automação como Guardiã:** Utilizar scripts (`.sh`) para tarefas repetitivas (backup, restore, setup). Se o processo é manual, ele é falho.
 
 ### II. Segurança e Dados (Data Vault)
 -   **(P6) Gerenciamento Estrito de Segredos:** Segredos nunca entram no Git. `.env` é exclusivo para desenvolvimento local; Produção usa injeção de variáveis seguras.

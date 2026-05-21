@@ -1,3 +1,4 @@
+<!-- .agent/workflows/session-start.md | Atualizado em: 21-05-2026 11:31:00(GMT-04:00) -->
 ---
 description: >
   Inicia sessão de trabalho recuperando contexto completo do projeto. 
@@ -113,7 +114,7 @@ o escopo, as pastas de trabalho e a infraestrutura de processamento.
 
 #### 📋 MODO TRABALHO — Se `CONTEXT.md` existe
 
-Processar e apresentar resumo:
+Processar e apresentar resumo baseado também na leitura do `.agent/session/sprint_atual.md` para mapear os checklists em andamento:
 
 ```markdown
 ---
@@ -124,11 +125,14 @@ Processar e apresentar resumo:
 **Branch**: [branch-name]
 **Última sessão**: [data] — [X dias/horas atrás]
 
+### 📋 Checklists Atuais (sprint_atual.md)
+[Apresentar tarefas não concluídas ou em andamento baseadas no arquivo sprint_atual.md]
+
 ### ✅ Concluído recentemente
 [lista dos últimos 3-5 itens concluídos]
 
 ### 🎯 Próximo passo (P0 — mais prioritário)
-**[descrição clara do próximo item]**
+**[descrição clara do próximo item com base no sprint]**
 
 ### 📌 Outros pendentes
 - P1: [item]
