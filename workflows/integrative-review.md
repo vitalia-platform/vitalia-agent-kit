@@ -12,6 +12,9 @@ description: >
 
 ## 1. Fase Exploratória — Painel Interativo de Setup
 
+Quando o usuário acionar `/integrative-review`, o agente deve primeiro inspecionar o diretório de trabalho.
+Se encontrar dados existentes (`criteria_config.yaml`, `exportacao/`, `amostra/`, `lotes/`, `saida/`, `fichamentos/` ou outros artefatos relacionados), ele deve pré-preencher o painel lateral com um resumo desses itens e orientar o usuário sobre como exportar ou arquivar os dados antes de prosseguir.
+
 Quando o usuário acionar `/integrative-review`, **PARE E COLETE** as informações abaixo. Apresente este formulário criando um **Artifact** em formato Markdown ou HTML (ex: `setup_revisao.md` ou `setup_revisao.html`), que abrirá em um painel, permitindo ao usuário visualizar e aprovar os dados de entrada de forma estruturada:
 
 ### 1.1 Identidade do Estudo
@@ -113,6 +116,21 @@ Após criar as pastas, **PARE e instrua o pesquisador**:
   → [pasta-exportacao]/           — CSV bruto completo da busca nas bases
 
 Quando os arquivos estiverem depositados, confirme para iniciar a análise da amostra.
+
+### 3.1 Opções de Reconfiguração e Backup
+
+Se o usuário desejar reiniciar ou recalibrar o processo, ofereça duas opções explícitas antes de qualquer limpeza automática:
+
+- **(A) Reconfiguração Total — "Refazer tudo"**: apaga artefatos de run (pastas `lotes/`, `saida/`, `amostra/` processada e `PRISMA_LOG.csv`) e reinicia o painel de setup desde o começo. Esta opção DEVE solicitar um backup automático antes de qualquer exclusão.
+- **(B) Recalibração Final — "Refazer fase final"**: mantém a estrutura e dados brutos, mas regenera apenas os exemplos few-shot e limpa os shards da Fase 1 para reprocessamento. Não apaga `criteria_config.yaml` a menos que o usuário confirme.
+
+Quando qualquer opção que remova dados for selecionada, o agente **deve** oferecer criar um backup automaticamente chamando o script de utilidade:
+
+```
+python scripts/review_pipeline/backup_workdir.py
+```
+
+O backup será salvo em `saida/backups/` e um registro de sessão será persistido em `.agent/session/last_backup.json`.
 ```
 
 ---
